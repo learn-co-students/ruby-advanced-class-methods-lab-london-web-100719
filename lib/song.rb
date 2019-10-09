@@ -9,7 +9,7 @@ class Song
   end
 
   def self.create
-    @song = self.new
+    @song = Song.new
     @song.save
     return @song
   end 
@@ -21,8 +21,7 @@ class Song
   end
 
   def self.create_by_name(song_name)
-    self.new_by_name(song_name)
-    @song.save
+    self.new_by_name(song_name).save
     return @song
   end
 
@@ -34,26 +33,19 @@ class Song
   end
 
   def self.find_or_create_by_name(song_name)
-    song_found = self.find_by_name(song_name)
-    #song_found ? song_found : self.create_by_name(song_name) 
-    if song_found
-      return song_found
-    else 
-      self.create_by_name(song_name) 
-    end
+    self.find_by_name(song_name) || self.create_by_name(song_name) 
   end
 
   def self.new_from_filename(file_name)
     split_file_name = file_name.split(/[-.]/)
-    @song.artist_name = split_file_name[0].strip
-    @song.name = split_file_name[1].strip
-    return @song
+    song = self.new
+    song.artist_name = split_file_name[0].strip
+    song.name = split_file_name[1].strip
+    return song
   end
 
   def self.create_from_filename(file_name)
-    self.new_from_filename(file_name)
-    @song.save 
-    return @song
+    self.new_from_filename(file_name).save  
   end
 
   def self.destroy_all
@@ -61,7 +53,7 @@ class Song
   end
 
   def self.alphabetical
-    self.all.sort_by { |song| song.name }
+    self.all.sort_by(&:name)
   end
 
   def save
